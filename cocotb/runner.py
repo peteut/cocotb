@@ -957,10 +957,12 @@ class Nvc(Simulator):
                     f"WARNING: {type(self).__qualname__} only supports VHDL. build_args {arg!r} will not be applied."
                 )
 
+        build_args = [arg for arg in self.build_args if type(arg) in (str, VHDL)]
+        if "-a" not in build_args:
+            build_args += ["-a"]
         cmds = [
             ["nvc", f"--work={self.hdl_library}"]
-            + [arg for arg in self.build_args if type(arg) in (str, VHDL)]
-            + ["-a"]
+            + build_args
             + [str(source) for source in self.sources if is_vhdl_source(source)]
             + [str(source) for source in self.vhdl_sources]
         ]
